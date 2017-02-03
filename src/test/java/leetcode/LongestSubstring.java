@@ -2,7 +2,9 @@ package leetcode;
 
 import edu.princeton.cs.algs4.StdOut;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -38,8 +40,34 @@ public class LongestSubstring {
         return length;
     }
 
+    /**
+     * 利用Map来存储扫描过得字符。
+     *
+     * 保留两个指针，i和j(j <= i)，从头扫描字符串，如果字符已经在Map里，则把j移到相同字符的右边。
+     * 这样substring的长度就一直是 i - j + 1
+     *
+     * @param s 输入的字符串
+     * @return 最大不重复的子字符串长度
+     */
+    private static int lengthOfLongestSubstring2(String s) {
+        if (s.length() == 0) return 0;
+
+        Map<Character, Integer> map = new HashMap<>(s.length());
+        int max = 0;
+        for (int i = 0, j = 0; i < s.length(); i++) {
+            if (map.containsKey(s.charAt(i))) {
+                j = Math.max(j, map.get(s.charAt(i)) + 1);
+            }
+            map.put(s.charAt(i), i);
+            max = Math.max(max, i - j + 1);
+        }
+        return max;
+    }
+
     public static void main(String[] args) {
         String s = "abcabcbb";
         StdOut.print(lengthOfLongestSubstring(s));
+        StdOut.println();
+        StdOut.print(lengthOfLongestSubstring2(s));
     }
 }
