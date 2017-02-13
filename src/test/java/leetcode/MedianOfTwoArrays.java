@@ -1,6 +1,5 @@
 package leetcode;
 
-import edu.princeton.cs.algs4.Quick;
 import edu.princeton.cs.algs4.StdOut;
 
 /**
@@ -131,9 +130,11 @@ public class MedianOfTwoArrays {
     }
 
     /**
-     * 解法2：二分法查找，找到第K个大小的值，其中K是两个数组长m,n的一半。
-     * 通过两次查找，如果m+n是偶数，则两次K是一样的；如果是奇数，则一次是K，一次K+1位置的值。
-     * 两次的值的平均值就是中间值。
+     * 解法3：二分法查找，找到第K个大小的值
+     * 同上面的解法，这个问题主要的思路就是找到第K个大小的值，这里的K是中间位置。
+     *
+     * 其实可以不需要按照上面顺序查找，根据二分法思想，可以用两个index，p和q指向两个数组。
+     * 如果p + q = k，那么就找到了第k个大小的值。
      *
      * https://discuss.leetcode.com/topic/4996/share-my-o-log-min-m-n-solution-with-explanation
      *
@@ -148,33 +149,48 @@ public class MedianOfTwoArrays {
         int n = nums2.length;
 
         int k = (m + n + 1) / 2;
-        // TODO 
-        return 0.0f;
+
+        if ((m + n) % 2 == 1) {
+            return getKthNum(nums1, m, nums2, n, k);
+        } else {
+            return (getKthNum(nums1, m, nums2, n, k) + getKthNum(nums1, m, nums2, n, k + 1)) / 2.0f;
+        }
     }
 
-//    private static int getKthNum(int[] nums1, int m, int[] nums2, int n, int k) {
-//        // 保证 m <= n
-//        if (m > n) {
-//            return getKthNum(nums2, n, nums1, m, k);
-//        }
-//        // 处理特殊情况
-//        if (m == 0) {
-//            return nums2[k - 1];
-//        }
-//        if (k == 1) {
-//            return Math.min(nums1[0], nums2[0]);
-//        }
-//
-//        int i = Math.min(m, k / 2);
-//        int j = k - i;
-//
-//
-//    }
+    private static int getKthNum2(int[] nums1, int m, int[] nums2, int n, int k) {
+        // 保证 m <= n
+        if (m > n) {
+            return getKthNum2(nums2, n, nums1, m, k);
+        }
+        // 处理特殊情况
+        if (m == 0) {
+            return nums2[k - 1];
+        }
+        if (k == 1) {
+            return Math.min(nums1[0], nums2[0]);
+        }
+
+        int iMin = 0, iMax = m;
+        while (iMin <= iMax) {
+            int i = (iMax + iMin) / 2;
+            int j = k - i;
+
+            if (i < m && j > 0 && nums1[i] < nums2[j - 1]) {
+                iMin = i + 1;
+            } else if (i > 0 && j < n && nums1[i - 1] > nums2[j]) {
+                iMax = i - 1;
+            } else {
+                return Math.max(nums1[i - 1], nums2[j - 1]);
+            }
+        }
+        return 0;
+    }
 
     public static void main(String[] args) {
         int[] nums1 = {1, 2};
-        int[] nums2 = {3, 4};
+        int[] nums2 = {2, 3, 4, 5};
         StdOut.println(findMedianSortedArrays(nums1, nums2));
         StdOut.println(findMedianSortedArrays2(nums1, nums2));
+        StdOut.println(findMedianSortedArrays3(nums1, nums2));
     }
 }
