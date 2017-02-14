@@ -151,9 +151,9 @@ public class MedianOfTwoArrays {
         int k = (m + n + 1) / 2;
 
         if ((m + n) % 2 == 1) {
-            return getKthNum(nums1, m, nums2, n, k);
+            return getKthNum2(nums1, m, nums2, n, k);
         } else {
-            return (getKthNum(nums1, m, nums2, n, k) + getKthNum(nums1, m, nums2, n, k + 1)) / 2.0f;
+            return (getKthNum2(nums1, m, nums2, n, k) + getKthNum2(nums1, m, nums2, n, k + 1)) / 2.0f;
         }
     }
 
@@ -180,15 +180,17 @@ public class MedianOfTwoArrays {
             } else if (i > 0 && j < n && nums1[i - 1] > nums2[j]) {
                 iMax = i - 1;
             } else {
-                return Math.max(nums1[i - 1], nums2[j - 1]);
+                if (i == 0) return nums2[j - 1];
+                else if (j == 0) return nums1[i - 1];
+                else return Math.max(nums1[i - 1], nums2[j - 1]);
             }
         }
-        return 0;
+        return -1;
     }
 
     public static void main(String[] args) {
-        int[] nums1 = {1, 2};
-        int[] nums2 = {2, 3, 4, 5};
+        int[] nums1 = {1, 2, 5};
+        int[] nums2 = {3, 4, 6};
         StdOut.println(findMedianSortedArrays(nums1, nums2));
         StdOut.println(findMedianSortedArrays2(nums1, nums2));
         StdOut.println(findMedianSortedArrays3(nums1, nums2));
