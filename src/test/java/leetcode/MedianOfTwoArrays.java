@@ -135,6 +135,9 @@ public class MedianOfTwoArrays {
      *
      * 其实可以不需要按照上面顺序查找，根据二分法思想，可以用两个index，p和q指向两个数组。
      * 如果p + q = k，那么就找到了第k个大小的值。
+     * 同时，退出循环的条件就是 nums1[p - 1] <= nums2[q] && nums1[p] >= nums2[q - 1]
+     *
+     * 利用二分法查找思想，我们确定p的搜索界限是[0, nums1.length]。同时由于q=k-p，那么q也动态的移动。
      *
      * https://discuss.leetcode.com/topic/4996/share-my-o-log-min-m-n-solution-with-explanation
      *
@@ -172,7 +175,7 @@ public class MedianOfTwoArrays {
 
         int iMin = 0, iMax = m;
         while (iMin <= iMax) {
-            int i = (iMax + iMin) / 2;
+            int i = (iMax + iMin) / 2; // 二分法查找
             int j = k - i;
 
             if (i < m && j > 0 && nums1[i] < nums2[j - 1]) {
